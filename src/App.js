@@ -1,25 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import ToDoItem from "./ToDoItem";
 
-function App() {
+export default function App() {
+  const [inputText, setInputText] = useState();
+  const [list, addList] = useState([]);
+
+  function handleChange(event) {
+    const newValue = event.target.value;
+    setInputText(newValue);
+  }
+
+  function handleClick() {
+    addList((prevValue) => {
+      return [...prevValue, inputText];
+    });
+    setInputText(" ");
+  }
+
+  function deleteItem(id) {
+    addList((prevValue) => {
+      return prevValue.filter((list, index) => {
+        return index !== id;
+      });
+    });
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="container">
+        <div className="heading">
+          <h1>To-do-List App</h1>
+        </div>
+        <div className="form">
+          <input
+            type="text"
+            value={inputText}
+            onChange={handleChange}
+            placeholder="Enter any Task"
+            required
+          />
+          <button onClick={handleClick}>
+            <span>Add</span>
+          </button>
+        </div>
+        <div>
+          <ul>
+            {list.map((item, index) => {
+              return (
+                <ToDoItem
+                  key={index}
+                  id={index}
+                  todolist={item}
+                  onChecked={deleteItem}
+                />
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </>
   );
 }
 
-export default App;
+
